@@ -1,0 +1,28 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# n8n local data
+.n8n/
+*.sqlite
+*.sqlite3
+*.db
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

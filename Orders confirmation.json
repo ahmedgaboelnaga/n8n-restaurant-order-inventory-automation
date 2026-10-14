@@ -1,0 +1,467 @@
+{
+  "name": "Orders confirmation",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [576, 976],
+      "name": "Telegram Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_ORDERS_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Orders"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Order Number": "={{ $('Code in Python').item.json.number }}",
+            "Status": "Done"
+          },
+          "matchingColumns": ["Order Number"],
+          "schema": [
+            { "id": "Name", "displayName": "Name", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Phone", "displayName": "Phone", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Item", "displayName": "Item", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Price", "displayName": "Price", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Date", "displayName": "Date", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Status", "displayName": "Status", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Order Number", "displayName": "Order Number", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false },
+            { "id": "row_number", "displayName": "row_number", "required": false, "defaultMatch": false, "display": true, "type": "number", "canBeUsedToMatch": true, "readOnly": true, "removed": true }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [2416, 816],
+      "name": "Mark order Done"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_ORDERS_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Orders"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Order Number": "={{ $('Code in Python').item.json.number }}",
+            "Status": "Cancelled"
+          },
+          "matchingColumns": ["Order Number"],
+          "schema": [
+            { "id": "Name", "displayName": "Name", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Phone", "displayName": "Phone", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Item", "displayName": "Item", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Price", "displayName": "Price", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Date", "displayName": "Date", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": true },
+            { "id": "Status", "displayName": "Status", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Order Number", "displayName": "Order Number", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false },
+            { "id": "row_number", "displayName": "row_number", "required": false, "defaultMatch": false, "display": true, "type": "number", "canBeUsedToMatch": true, "readOnly": true, "removed": true }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1680, 992],
+      "name": "Mark Order as Cancelled"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.burger < 10 || $json.bread < 10 }}",
+                    "rightValue": 10,
+                    "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Stock Warning (less than 10)"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.burger >= 10 && $json.bread >= 10 }}",
+                    "rightValue": 10,
+                    "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Stock ok"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [1872, 800],
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "pythonNative",
+        "pythonCode": "action, number, *_ = _item[\"json\"][\"message\"][\"text\"].split(\" \")\n\nreturn {\n  \"json\": {\n    \"number\": int(number),\n    \"action\": action\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [752, 976],
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=Order {{ $json['Order Number'] }} Done",
+        "replyMarkup": "=",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": { "appendAttribution": false }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2592, 816],
+      "name": "Send Completion message"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=Order {{ $json['Order Number'] }} cancelled",
+        "replyMarkup": "=",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": { "appendAttribution": false }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1904, 992],
+      "name": "Send cancellation message"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.burger >= 1 && $json.bread >= 1 }}",
+                    "rightValue": 1,
+                    "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "enought stock"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.burger < 1 || $json.bread < 1 }}",
+                    "rightValue": 1,
+                    "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [1360, 816],
+      "name": "Switch3",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_STOCK_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Stock"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "filtersUI": { "values": [] },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1200, 816],
+      "name": "Get Stock"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_STOCK_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Stock"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": 2,
+            "burger": "={{ $('Get Stock').item.json.burger - 1}}",
+            "bread": "={{ $('Get Stock').item.json.bread - 1 }}"
+          },
+          "matchingColumns": ["row_number"],
+          "schema": [
+            { "id": "burger", "displayName": "burger", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false },
+            { "id": "bread", "displayName": "bread", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false },
+            { "id": "row_number", "displayName": "row_number", "required": false, "defaultMatch": false, "display": true, "type": "number", "canBeUsedToMatch": true, "readOnly": true, "removed": false }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1680, 800],
+      "name": "Update stock"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=Stocke low!\nBurger: {{ $('Update stock').item.json.burger }} items\nBread: {{ $('Update stock').item.json.bread }} items",
+        "additionalFields": { "appendAttribution": false }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2144, 688],
+      "name": "Send Stock warning"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_ORDERS_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Orders"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Order Number",
+              "lookupValue": "={{ $('Code in Python').item.json.number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1184, 1088],
+      "name": "Get row(s) in sheet"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "Done",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Done"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "Cancel",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cancel"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [944, 976],
+      "name": "Action Switch"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Done",
+                    "operator": { "type": "string", "operation": "notEquals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cancel"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Done",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Failed"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [1360, 1088],
+      "name": "Cancel operation"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "Failed! (Order Already Done)",
+        "additionalFields": { "appendAttribution": false }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1680, 1200],
+      "name": "Send a text message"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": { "main": [[{ "node": "Code in Python", "type": "main", "index": 0 }]] },
+    "Mark order Done": { "main": [[{ "node": "Send Completion message", "type": "main", "index": 0 }]] },
+    "Mark Order as Cancelled": { "main": [[{ "node": "Send cancellation message", "type": "main", "index": 0 }]] },
+    "Switch1": {
+      "main": [
+        [{ "node": "Send Stock warning", "type": "main", "index": 0 }],
+        [{ "node": "Mark order Done", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code in Python": { "main": [[{ "node": "Action Switch", "type": "main", "index": 0 }]] },
+    "Get Stock": { "main": [[{ "node": "Switch3", "type": "main", "index": 0 }]] },
+    "Switch3": {
+      "main": [
+        [{ "node": "Update stock", "type": "main", "index": 0 }],
+        [{ "node": "Mark Order as Cancelled", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Update stock": { "main": [[{ "node": "Switch1", "type": "main", "index": 0 }]] },
+    "Send Stock warning": { "main": [[{ "node": "Mark order Done", "type": "main", "index": 0 }]] },
+    "Get row(s) in sheet": { "main": [[{ "node": "Cancel operation", "type": "main", "index": 0 }]] },
+    "Action Switch": {
+      "main": [
+        [{ "node": "Get Stock", "type": "main", "index": 0 }],
+        [{ "node": "Get row(s) in sheet", "type": "main", "index": 0 }]
+      ]
+    },
+    "Cancel operation": {
+      "main": [
+        [{ "node": "Mark Order as Cancelled", "type": "main", "index": 0 }],
+        [{ "node": "Send a text message", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
